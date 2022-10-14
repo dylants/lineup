@@ -7,15 +7,15 @@ import {
 
 const POSITION_PROBABILITIES: number[][] = [
   // PG
-  [100, 80, 60, 40, 20],
+  [200, 120, 40, 20, 5],
   // SG
-  [80, 100, 60, 40, 20],
+  [120, 200, 50, 20, 10],
   // SF
-  [60, 80, 100, 80, 40],
+  [20, 80, 200, 100, 20],
   // PF
-  [40, 60, 70, 100, 80],
+  [10, 20, 80, 200, 120],
   // C
-  [20, 40, 60, 80, 100],
+  [5, 20, 40, 120, 200],
 ];
 
 export function getProbabilitiesForPosition(positionName: string): number[] {
@@ -44,21 +44,34 @@ export function generateLineup(players: {}): { [key: string]: string } {
   const lineup: { [key: string]: string } = {};
   const positionsTaken = [];
 
-  _.forEach(players, (positionName, playerName) => {
-    logger.info('finding position for player %s', playerName);
-    const probabilities = getProbabilitiesForPosition(positionName);
+  _(players)
+    .keys()
+    .shuffle()
+    .forEach((playerName) => {
+      logger.info('finding position for player %s', playerName);
 
-    let positionIndex: number;
-    do {
-      logger.info('looking for position...');
-      positionIndex = generateRandomPosition(probabilities);
-      logger.info('position index %i', positionIndex);
-    } while (positionsTaken.includes(positionIndex));
+      // if we've got 4 positions found, just fill the last one
+      if (positionsTaken.length === 4) {
+        const remainingPosition = _.difference(_.range(5), positionsTaken)[0];
+        logger.info('remainingPosition %i', remainingPosition);
+        lineup[playerName] = getPositionNameFromIndex(remainingPosition);
+        return;
+      }
 
-    positionsTaken.push(positionIndex);
-    logger.info('positionsTaken %j', positionsTaken);
-    lineup[playerName] = getPositionNameFromIndex(positionIndex);
-  });
+      const positionName = players[playerName];
+      const probabilities = getProbabilitiesForPosition(positionName);
+
+      let positionIndex: number;
+      do {
+        logger.info('looking for position...');
+        positionIndex = generateRandomPosition(probabilities);
+        logger.info('position index %i', positionIndex);
+      } while (positionsTaken.includes(positionIndex));
+
+      positionsTaken.push(positionIndex);
+      logger.info('positionsTaken %j', positionsTaken);
+      lineup[playerName] = getPositionNameFromIndex(positionIndex);
+    });
 
   logger.info('lineup %j', lineup);
   return lineup;

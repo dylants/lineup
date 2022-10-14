@@ -16,7 +16,7 @@ describe('lineup', () => {
     });
   });
 
-  describe('generateLineup', () => {
+  describe('generateLineup with standard players', () => {
     const players = {
       alpha: 'PG',
       beta: 'SG',
@@ -30,7 +30,7 @@ describe('lineup', () => {
     });
 
     it('should generate a lineup with every player included', () => {
-      expect(Object.keys(lineup)).toEqual(Object.keys(players));
+      expect(Object.keys(lineup).sort()).toEqual(Object.keys(players).sort());
     });
 
     it('should generate a lineup without duplicates', () => {
