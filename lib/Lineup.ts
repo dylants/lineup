@@ -3,7 +3,7 @@ import Assignment from './Assignment';
 import logger from './logger';
 import Player from './Player';
 import Position from './Position';
-import { findProbablePosition } from './probabilities';
+import { determinePositionOutcome } from './probabilities';
 
 export default class Lineup {
   assignments: Assignment[] = [];
@@ -52,7 +52,7 @@ export default class Lineup {
         break;
       }
 
-      const position: Position = findProbablePosition(player.skills);
+      const position: Position = determinePositionOutcome(player.skills);
       logger.debug('position %j', position);
 
       if (lineup.isPositionTaken(position)) {
