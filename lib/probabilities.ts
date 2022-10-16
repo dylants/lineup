@@ -8,28 +8,34 @@ export interface PositionOutcome {
   outcome: number;
 }
 
-export function generatePositionOutcomes(skills: Skill[]): PositionOutcome[] {
-  const outcomes = _.map(skills, (skill) => {
-    return {
-      position: skill.position,
-      outcome: skill.ability * Math.random(),
-    };
-  });
-  logger.debug('position outcomes %j', outcomes);
-  return outcomes;
-}
+/**
+ * Randomly adds to each Player's Skill abilities, to generate the highest
+ * scoring Position.
+ *
+ * @param skills the Player's Skills
+ * @returns The highest scoring Position
+ */
+export function determinePositionOutcome(skills: Skill[]): Position {
+  const positionOutcome = _.reduce(
+    skills,
+    (leadPO: PositionOutcome, skill: Skill) => {
+      // generate an outcome based on the skill's ability
+      const po: PositionOutcome = {
+        position: skill.position,
+        outcome: skill.ability * Math.random(),
+      };
+      logger.debug('position outcome %j', po);
 
-export function findProbablePosition(skills: Skill[]): Position {
-  // generate an outcome number for each of the skill's ability
-  const positionOutcomes = generatePositionOutcomes(skills);
+      // return the winning outcome
+      if (leadPO.outcome < po.outcome) {
+        return po;
+      } else {
+        return leadPO;
+      }
+    },
+    { position: null, outcome: 0 }
+  );
 
-  // find the highest outcome, and claim this as the position
-  const highestPositionOutcome = _.reduce(positionOutcomes, (leadPO, po) => {
-    if (!leadPO || leadPO.outcome < po.outcome) {
-      return po;
-    } else {
-      return leadPO;
-    }
-  });
-  return highestPositionOutcome.position;
+  logger.debug('winning position outcome %j', positionOutcome);
+  return positionOutcome.position;
 }

@@ -2,7 +2,6 @@ import _ from 'lodash';
 import Player from './Player';
 import Lineup from './Lineup';
 import Position from './Position';
-import Assignment from './Assignment';
 import Skill from './Skill';
 
 describe('Lineup', () => {
