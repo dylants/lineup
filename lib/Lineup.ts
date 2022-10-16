@@ -39,12 +39,12 @@ export default class Lineup {
     // fill a lineup of 5 assignments
     while (lineup.assignments.length < 5) {
       const player = playersAvailable.shift();
-      logger.info('attempting to place player in assignment: %o', player);
+      logger.debug('attempting to place player in assignment: %o', player);
 
       // if this is the last player, assign to an available position
       if (playersAvailable.length === 0) {
         const availablePosition = _.sample(lineup.findEmptyPositions());
-        logger.info(
+        logger.debug(
           'only one player remaining, assigning to availablePosition %o',
           availablePosition
         );
@@ -53,19 +53,19 @@ export default class Lineup {
       }
 
       const position: Position = findProbablePosition(player.skills);
-      logger.info('position %j', position);
+      logger.debug('position %j', position);
 
       if (lineup.isPositionTaken(position)) {
-        logger.info('already have a player at this position, moving on...');
+        logger.debug('already have a player at this position, moving on...');
         playersAvailable.push(player);
       } else {
         // assign this player to the position
-        logger.info('adding player to the position');
+        logger.debug('adding player to the position');
         lineup.addAssignment(player, position);
       }
     }
 
-    logger.info('lineup %j', lineup);
+    logger.debug('lineup %j', lineup);
     return lineup;
   }
 }

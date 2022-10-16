@@ -15,7 +15,7 @@ export function generatePositionOutcomes(skills: Skill[]): PositionOutcome[] {
       outcome: skill.ability * Math.random(),
     };
   });
-  logger.info('position outcomes %j', outcomes);
+  logger.debug('position outcomes %j', outcomes);
   return outcomes;
 }
 
