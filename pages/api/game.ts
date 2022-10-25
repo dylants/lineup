@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
-import Lineup from '../../lib/Lineup';
+import Game from '../../lib/Game';
 import Player from '../../lib/Player';
 import Skill from '../../lib/Skill';
 
@@ -19,9 +19,9 @@ router.get((req, res) => {
     new Player('small2', Skill.DEFAULT_SF_SKILLS),
     new Player('center1', Skill.DEFAULT_C_SKILLS),
   ];
-  const lineup = Lineup.generateLineup(players);
+  const game = Game.generateGame(players);
 
-  return res.send(lineup);
+  return res.send(game);
 });
 
 export default router.handler();
