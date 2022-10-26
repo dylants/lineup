@@ -1,22 +1,11 @@
 import _ from 'lodash';
+
 import Game from './Game';
-import Player from './Player';
-import Skill from './Skill';
+import { generateRandomPlayers } from './utils';
 
 describe('Game', () => {
   describe('generateGame with a standard set of players', () => {
-    const players = [
-      new Player('point1', Skill.DEFAULT_PG_SKILLS),
-      new Player('point2', Skill.DEFAULT_PG_SKILLS),
-      new Player('shoot1', Skill.DEFAULT_SG_SKILLS),
-      new Player('power2', Skill.DEFAULT_PF_SKILLS),
-      new Player('center2', Skill.DEFAULT_C_SKILLS),
-      new Player('power3', Skill.DEFAULT_PF_SKILLS),
-      new Player('small1', Skill.DEFAULT_SF_SKILLS),
-      new Player('power1', Skill.DEFAULT_PF_SKILLS),
-      new Player('small2', Skill.DEFAULT_SF_SKILLS),
-      new Player('center1', Skill.DEFAULT_C_SKILLS),
-    ];
+    const players = generateRandomPlayers(10);
 
     let game: Game;
 

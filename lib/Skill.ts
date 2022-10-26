@@ -38,4 +38,21 @@ export default class Skill {
     new Skill(Position.PF, 120),
     new Skill(Position.C, 200),
   ];
+
+  static getDefaultSkills(position: Position): Skill[] {
+    switch (position) {
+      case Position.PG:
+        return this.DEFAULT_PG_SKILLS;
+      case Position.SG:
+        return this.DEFAULT_SG_SKILLS;
+      case Position.SF:
+        return this.DEFAULT_SF_SKILLS;
+      case Position.PF:
+        return this.DEFAULT_PF_SKILLS;
+      case Position.C:
+        return this.DEFAULT_C_SKILLS;
+      default:
+        break;
+    }
+  }
 }
