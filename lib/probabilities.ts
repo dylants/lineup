@@ -21,8 +21,8 @@ export function determinePositionOutcome(skills: Skill[]): Position {
     (leadPO: PositionOutcome, skill: Skill) => {
       // generate an outcome based on the skill's ability
       const po: PositionOutcome = {
-        position: skill.position,
         outcome: skill.ability * Math.random(),
+        position: skill.position,
       };
       logger.debug('position outcome %j', po);
 
@@ -33,7 +33,7 @@ export function determinePositionOutcome(skills: Skill[]): Position {
         return leadPO;
       }
     },
-    { position: null, outcome: 0 }
+    { outcome: 0, position: null }
   );
 
   logger.debug('winning position outcome %j', positionOutcome);
