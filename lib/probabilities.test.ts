@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import Position from './Position';
+import Position from './game/Position';
+import Skill from './game/Skill';
 import * as probabilities from './probabilities';
-import Skill from './Skill';
 
 describe('probabilities', () => {
   describe('findProbablePosition', () => {

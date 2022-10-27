@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import Player from './Player';
-import Position from './Position';
-import Skill from './Skill';
+import Player from './game/Player';
+import Position from './game/Position';
+import Skill from './game/Skill';
 
 export function generateRandomPlayers(amount: number): Player[] {
   // perform the division, and save off both the quotient and remainder

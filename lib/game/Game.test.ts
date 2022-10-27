@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import Game from './Game';
-import { generateRandomPlayers } from './utils';
+import { generateRandomPlayers } from '../utils';
 
 describe('Game', () => {
   describe('generateGame with a standard set of players', () => {
