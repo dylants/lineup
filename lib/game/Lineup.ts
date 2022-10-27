@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import Assignment from './Assignment';
-import logger from './logger';
+import logger from '../logger';
 import Player from './Player';
 import Position from './Position';
-import { determinePositionOutcome } from './probabilities';
+import { determinePositionOutcome } from '../probabilities';
 
 export default class Lineup {
   assignments: Assignment[] = [];

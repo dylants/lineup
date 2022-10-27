@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import Player from './Player';
-import Position from './Position';
+import Player from './game/Player';
+import Position from './game/Position';
 import { generateRandomPlayers } from './utils';
 
 describe('utils', () => {

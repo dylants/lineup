@@ -1,7 +1,7 @@
 import _ from 'lodash';
+import Position from './game/Position';
+import Skill from './game/Skill';
 import logger from './logger';
-import Position from './Position';
-import Skill from './Skill';
 
 export interface PositionOutcome {
   position: Position;
