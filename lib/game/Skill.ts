@@ -51,8 +51,6 @@ export default class Skill {
         return this.DEFAULT_PF_SKILLS;
       case Position.C:
         return this.DEFAULT_C_SKILLS;
-      default:
-        break;
     }
   }
 }
