@@ -30,6 +30,14 @@ export default class Lineup {
     this.assignments.push(new Assignment(player, position));
   }
 
+  sortAssigments() {
+    // Sort based on the Position definition
+    this.assignments = _.sortBy(
+      this.assignments,
+      (assignment) => Position.SORT_ORDER[assignment.position.name]
+    );
+  }
+
   static generateLineup(players: Player[]): Lineup {
     const lineup: Lineup = new Lineup();
 
@@ -64,6 +72,8 @@ export default class Lineup {
         lineup.addAssignment(player, position);
       }
     }
+
+    lineup.sortAssigments();
 
     logger.debug('lineup %j', lineup);
     return lineup;

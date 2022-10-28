@@ -84,8 +84,8 @@ describe('Lineup', () => {
       const positionNames = _.map(
         lineup.assignments,
         (assignment) => assignment.position.name
-      ).sort();
-      expect(positionNames).toEqual(['C', 'PF', 'PG', 'SF', 'SG']);
+      );
+      expect(positionNames).toEqual(['PG', 'SG', 'SF', 'PF', 'C']);
     });
   });
 
@@ -125,8 +125,8 @@ describe('Lineup', () => {
       const positionNames = _.map(
         lineup.assignments,
         (assignment) => assignment.position.name
-      ).sort();
-      expect(positionNames).toEqual(['C', 'PF', 'PG', 'SF', 'SG']);
+      );
+      expect(positionNames).toEqual(['PG', 'SG', 'SF', 'PF', 'C']);
     });
   });
 });
