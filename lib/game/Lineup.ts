@@ -9,6 +9,10 @@ export default class Lineup {
   assignments: Assignment[] = [];
   frame: number;
 
+  constructor(frame: number) {
+    this.frame = frame;
+  }
+
   isPositionTaken(position: Position): boolean {
     const positions = _.map(
       this.assignments,
@@ -30,8 +34,16 @@ export default class Lineup {
     this.assignments.push(new Assignment(player, position));
   }
 
-  static generateLineup(players: Player[]): Lineup {
-    const lineup: Lineup = new Lineup();
+  sortAssigments() {
+    // Sort based on the Position definition
+    this.assignments = _.sortBy(
+      this.assignments,
+      (assignment) => Position.SORT_ORDER[assignment.position.name]
+    );
+  }
+
+  static generateLineup(players: Player[], frame: number = 1): Lineup {
+    const lineup: Lineup = new Lineup(frame);
 
     // randomize the players to select for the lineup
     const playersAvailable = _.shuffle(players);
@@ -64,6 +76,8 @@ export default class Lineup {
         lineup.addAssignment(player, position);
       }
     }
+
+    lineup.sortAssigments();
 
     logger.debug('lineup %j', lineup);
     return lineup;

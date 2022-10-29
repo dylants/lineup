@@ -10,4 +10,7 @@ export default class Position {
   static C = new Position('C');
 
   static ALL_POSITIONS = [this.PG, this.SG, this.SF, this.PF, this.C];
+
+  // eslint-disable-next-line sort-keys
+  static SORT_ORDER = { PG: 1, SG: 2, SF: 3, PF: 4, C: 5 };
 }
