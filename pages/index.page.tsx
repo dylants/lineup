@@ -10,7 +10,7 @@ export default function Home() {
     revalidateOnFocus: false,
   });
 
-  if (error) return <div>error</div>;
+  if (error) return <div data-testid="error">error</div>;
   if (!data) return <div>loading...</div>;
 
   const lineups = data.lineups.map((lineup: Lineup) => {
@@ -18,13 +18,13 @@ export default function Home() {
       return (
         <tr key={assignment.player.name}>
           <td>{assignment.position.name}</td>
-          <td>{assignment.player.name}</td>
+          <td data-testid="player-names">{assignment.player.name}</td>
         </tr>
       );
     });
 
     return (
-      <table key={lineup.frame}>
+      <table key={lineup.frame} data-testid="lineup-table">
         <thead>
           <tr>
             <th>Position</th>
@@ -44,7 +44,7 @@ export default function Home() {
         <title>Lineup</title>
       </Head>
 
-      <main>
+      <main data-testid="main">
         <h1>Lineup</h1>
         {lineupsToDisplay}
         <div className="buttons">

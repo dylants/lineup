@@ -9,6 +9,10 @@ export default class Lineup {
   assignments: Assignment[] = [];
   frame: number;
 
+  constructor(frame: number) {
+    this.frame = frame;
+  }
+
   isPositionTaken(position: Position): boolean {
     const positions = _.map(
       this.assignments,
@@ -38,8 +42,8 @@ export default class Lineup {
     );
   }
 
-  static generateLineup(players: Player[]): Lineup {
-    const lineup: Lineup = new Lineup();
+  static generateLineup(players: Player[], frame: number = 1): Lineup {
+    const lineup: Lineup = new Lineup(frame);
 
     // randomize the players to select for the lineup
     const playersAvailable = _.shuffle(players);

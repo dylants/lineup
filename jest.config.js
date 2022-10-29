@@ -11,7 +11,11 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   // Add more setup options before each test is run
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  collectCoverage: true,
+  collectCoverageFrom: ['**/*.ts*'],
+  coveragePathIgnorePatterns: [
+    'pages/_app.page.tsx',
+    '<rootDir>/node_modules/',
+  ],
   coverageThreshold: {
     global: {
       branches: 100,
