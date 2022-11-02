@@ -1,5 +1,7 @@
 ## Hierarchy
 
+Below is an outline of the class hierarchy used in the `lineup` codebase:
+
 - Position
   - name: string
 - Skill
