@@ -2,6 +2,9 @@
   "name": "lineup",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "^18"
+  },
   "scripts": {
     "build": "next build",
     "clean": "rimraf .next .swc coverage node_modules next-env.d.ts",
