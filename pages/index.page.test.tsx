@@ -41,14 +41,16 @@ describe('index', () => {
 
       const lineupTables = screen.getAllByTestId('lineup-table');
 
-      expect(lineupTables).toHaveLength(1);
+      expect(lineupTables).toHaveLength(4);
 
-      const lineupTable = lineupTables[0];
-      expect(lineupTable).toHaveTextContent('PG');
-      expect(lineupTable).toHaveTextContent('SG');
-      expect(lineupTable).toHaveTextContent('SF');
-      expect(lineupTable).toHaveTextContent('PF');
-      expect(lineupTable).toHaveTextContent('C');
+      for (let i = 0; i < 4; i++) {
+        const lineupTable = lineupTables[i];
+        expect(lineupTable).toHaveTextContent('PG');
+        expect(lineupTable).toHaveTextContent('SG');
+        expect(lineupTable).toHaveTextContent('SF');
+        expect(lineupTable).toHaveTextContent('PF');
+        expect(lineupTable).toHaveTextContent('C');
+      }
     });
 
     it('displays a different lineup when requested', async () => {
