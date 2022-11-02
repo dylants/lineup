@@ -22,7 +22,7 @@ describe('/api/game', () => {
 
       const game: Game = res._getData();
       expect(game).toBeTruthy();
-      expect(game.lineups.length).toBeGreaterThan(0);
+      expect(game.lineups.length).toEqual(4);
     });
   });
 });
