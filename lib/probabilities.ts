@@ -33,7 +33,7 @@ export function determinePositionOutcome(skills: Skill[]): Position {
         return leadPO;
       }
     },
-    { outcome: 0, position: null }
+    { outcome: 0, position: Position.C }
   );
 
   logger.debug('winning position outcome %j', positionOutcome);

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Lineup from './Lineup';
 import Player from './Player';
 
-const NUM_FRAMES: number = 4;
+const NUM_FRAMES = 4;
 
 export default class Game {
   lineups: Lineup[] = [];
@@ -13,7 +13,7 @@ export default class Game {
     }
 
     const game = new Game();
-    let frame: number = 1;
+    let frame = 1;
 
     while (frame <= NUM_FRAMES) {
       // (re)set the remaining players to the pool of players available
@@ -29,11 +29,11 @@ export default class Game {
         if (remainingPlayers.length < 5) {
           const difference = 5 - remainingPlayers.length;
           remainingPlayers = remainingPlayers.concat(
-            _.times(difference, () => _.sample(players))
+            _.times(difference, () => _.sample(players)!)
           );
         }
 
-        let lineup = Lineup.generateLineup(remainingPlayers, frame);
+        const lineup = Lineup.generateLineup(remainingPlayers, frame);
         game.lineups.push(lineup);
 
         // find the remaining players

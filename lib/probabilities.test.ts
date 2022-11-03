@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import Position from './game/Position';
 import Skill from './game/Skill';
 import * as probabilities from './probabilities';

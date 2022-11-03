@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import Player from './Player';
 import Position from './Position';
 

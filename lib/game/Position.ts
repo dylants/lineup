@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 export default class Position {
   constructor(public name: string) {}
 

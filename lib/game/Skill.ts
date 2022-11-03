@@ -52,5 +52,6 @@ export default class Skill {
       case Position.C:
         return this.DEFAULT_C_SKILLS;
     }
+    throw new Error('unknown Position');
   }
 }
