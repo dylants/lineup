@@ -14,7 +14,7 @@ export function generateRandomPlayers(amount: number): Player[] {
    */
   const positions = _.flatten(
     _.times(quotient, () => Position.ALL_POSITIONS)
-  ).concat(_.times(remainder, () => _.sample(Position.ALL_POSITIONS)));
+  ).concat(_.times(remainder, () => _.sample(Position.ALL_POSITIONS)!));
 
   // randomize the list, and create a new player for each position
   return _(positions)

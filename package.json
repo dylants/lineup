@@ -7,9 +7,11 @@
   },
   "scripts": {
     "build": "next build",
-    "clean": "rimraf .next .swc coverage node_modules next-env.d.ts",
+    "check-types": "tsc --noemit",
+    "clean": "rimraf .next .swc coverage node_modules next-env.d.ts tsconfig.tsbuildinfo",
     "dev": "next dev",
-    "lint": "next lint",
+    "eslint": "next lint",
+    "lint": "yarn eslint && yarn check-types",
     "start": "next start",
     "test": "jest --coverage",
     "test:watch": "jest --watch"
@@ -30,6 +32,8 @@
     "@types/lodash": "4.14.186",
     "@types/node": "18.8.5",
     "@types/react": "18.0.21",
+    "@typescript-eslint/eslint-plugin": "5.42.0",
+    "@typescript-eslint/parser": "5.42.0",
     "eslint": "8.25.0",
     "eslint-config-next": "12.3.1",
     "eslint-config-prettier": "8.5.0",

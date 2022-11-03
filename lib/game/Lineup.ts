@@ -38,11 +38,12 @@ export default class Lineup {
     // Sort based on the Position definition
     this.assignments = _.sortBy(
       this.assignments,
-      (assignment) => Position.SORT_ORDER[assignment.position.name]
+      (assignment) =>
+        Position.SORT_ORDER[assignment.position.name as keyof object]
     );
   }
 
-  static generateLineup(players: Player[], frame: number = 1): Lineup {
+  static generateLineup(players: Player[], frame = 1): Lineup {
     const lineup: Lineup = new Lineup(frame);
 
     // randomize the players to select for the lineup
@@ -50,12 +51,12 @@ export default class Lineup {
 
     // fill a lineup of 5 assignments
     while (lineup.assignments.length < 5) {
-      const player = playersAvailable.shift();
+      const player: Player = playersAvailable.shift()!;
       logger.debug('attempting to place player in assignment: %o', player);
 
       // if this is the last player, assign to an available position
       if (playersAvailable.length === 0) {
-        const availablePosition = _.sample(lineup.findEmptyPositions());
+        const availablePosition = _.sample(lineup.findEmptyPositions())!;
         logger.debug(
           'only one player remaining, assigning to availablePosition %o',
           availablePosition

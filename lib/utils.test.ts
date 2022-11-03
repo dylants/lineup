@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import Player from './game/Player';
 import Position from './game/Position';
 import { generateRandomPlayers } from './utils';
