@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Player from './Player';
-import Lineup from './Lineup';
+import Lineup, { LineupOutcome } from './Lineup';
 import Position from './Position';
 import Skill from './Skill';
 
@@ -62,9 +62,11 @@ describe('Lineup', () => {
       new Player('center', Skill.DEFAULT_C_SKILLS),
     ];
 
+    let lineupOutcome: LineupOutcome;
     let lineup: Lineup;
     beforeAll(() => {
-      lineup = Lineup.generateLineup(players);
+      lineupOutcome = Lineup.generateLineupOutcome(players);
+      lineup = lineupOutcome.lineup;
     });
 
     it('should generate a lineup with every player included', () => {
@@ -92,6 +94,10 @@ describe('Lineup', () => {
       );
       expect(positionNames).toEqual(['PG', 'SG', 'SF', 'PF', 'C']);
     });
+
+    it('should generate a LineupOutcome without any remaining players', () => {
+      expect(lineupOutcome.remainingPlayers.length).toEqual(0);
+    });
   });
 
   describe('generateLineup with large mix of players', () => {
@@ -108,9 +114,11 @@ describe('Lineup', () => {
       new Player('center1', Skill.DEFAULT_C_SKILLS),
     ];
 
+    let lineupOutcome: LineupOutcome;
     let lineup: Lineup;
     beforeAll(() => {
-      lineup = Lineup.generateLineup(players);
+      lineupOutcome = Lineup.generateLineupOutcome(players);
+      lineup = lineupOutcome.lineup;
     });
 
     it('should generate a lineup of 5 players', () => {
@@ -132,6 +140,10 @@ describe('Lineup', () => {
         (assignment) => assignment.position.name
       );
       expect(positionNames).toEqual(['PG', 'SG', 'SF', 'PF', 'C']);
+    });
+
+    it('should generate a LineupOutcome without 5 remaining players', () => {
+      expect(lineupOutcome.remainingPlayers.length).toEqual(5);
     });
   });
 });

@@ -33,12 +33,15 @@ export default class Game {
           );
         }
 
-        const lineup = Lineup.generateLineup(remainingPlayers, frame);
-        game.lineups.push(lineup);
+        // generate the lineup
+        const lineupOutcome = Lineup.generateLineupOutcome(
+          remainingPlayers,
+          frame
+        );
 
-        // find the remaining players
-        const assignedPlayers = lineup.assignments.map((a) => a.player);
-        remainingPlayers = _.difference(remainingPlayers, assignedPlayers);
+        // store away the outcomes
+        game.lineups.push(lineupOutcome.lineup);
+        remainingPlayers = lineupOutcome.remainingPlayers;
 
         // move on to the next frame
         frame++;

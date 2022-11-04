@@ -36,6 +36,6 @@ export function determinePositionOutcome(skills: Skill[]): Position {
     { outcome: 0, position: Position.C }
   );
 
-  logger.debug('winning position outcome %j', positionOutcome);
+  logger.trace('winning position outcome %j', positionOutcome);
   return positionOutcome.position;
 }

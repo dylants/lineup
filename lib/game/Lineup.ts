@@ -5,6 +5,11 @@ import Player from './Player';
 import Position from './Position';
 import { determinePositionOutcome } from '../probabilities';
 
+export interface LineupOutcome {
+  lineup: Lineup;
+  remainingPlayers: Player[];
+}
+
 export default class Lineup {
   assignments: Assignment[] = [];
   frame: number;
@@ -43,7 +48,7 @@ export default class Lineup {
     );
   }
 
-  static generateLineup(players: Player[], frame = 1): Lineup {
+  static generateLineupOutcome(players: Player[], frame = 1): LineupOutcome {
     const lineup: Lineup = new Lineup(frame);
 
     // randomize the players to select for the lineup
@@ -66,21 +71,24 @@ export default class Lineup {
       }
 
       const position: Position = determinePositionOutcome(player.skills);
-      logger.debug('position %j', position);
+      logger.trace('position %j', position);
 
       if (lineup.isPositionTaken(position)) {
-        logger.debug('already have a player at this position, moving on...');
+        logger.trace('already have a player at this position, moving on...');
         playersAvailable.push(player);
       } else {
         // assign this player to the position
-        logger.debug('adding player to the position');
+        logger.trace('adding player to the position');
         lineup.addAssignment(player, position);
       }
     }
 
     lineup.sortAssigments();
 
-    logger.debug('lineup %j', lineup);
-    return lineup;
+    logger.trace('lineup %j', lineup);
+    return {
+      lineup,
+      remainingPlayers: playersAvailable,
+    };
   }
 }

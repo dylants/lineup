@@ -50,7 +50,7 @@ Configuration for the application is available within the [`config/index.js`](co
 
 ### Logging
 
-The default log level is set to `'info'`. Most of the log messages within the application are available at `'debug'` level.
+The default log level is set to `'info'`. Most of the log messages within the application are at lower levels.
 
 ## Tests
 
