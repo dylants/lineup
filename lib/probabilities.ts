@@ -1,41 +1,24 @@
-import _ from 'lodash';
+import Player from './game/Player';
 import Position from './game/Position';
-import Skill from './game/Skill';
 import logger from './logger';
+import SlightAdjustmentProbabilityModifier from './probability-modifiers/SlightAdjustmentProbabilityModifier';
 
 export interface PositionOutcome {
   position: Position;
   outcome: number;
 }
 
-/**
- * Randomly adds to each Player's Skill abilities, to generate the highest
- * scoring Position.
- *
- * @param skills the Player's Skills
- * @returns The highest scoring Position
- */
-export function determinePositionOutcome(skills: Skill[]): Position {
-  const positionOutcome = _.reduce(
-    skills,
-    (leadPO: PositionOutcome, skill: Skill) => {
-      // generate an outcome based on the skill's ability
-      const po: PositionOutcome = {
-        outcome: skill.ability * Math.random(),
-        position: skill.position,
-      };
-      logger.debug('position outcome %j', po);
+const slightAdjustmentProbabilityModifier =
+  new SlightAdjustmentProbabilityModifier(0.5, 1.5);
 
-      // return the winning outcome
-      if (leadPO.outcome < po.outcome) {
-        return po;
-      } else {
-        return leadPO;
-      }
-    },
-    { outcome: 0, position: Position.C }
-  );
+export function populatePositionProbabilities(player: Player): void {
+  // initially set each PositionProbability's score to the Skill's ability
+  logger.debug('generating initial positionProbabilities for each player');
+  player.positionProbabilities = player.skills.map((skill) => ({
+    position: skill.position,
+    score: skill.ability,
+  }));
 
-  logger.trace('winning position outcome %j', positionOutcome);
-  return positionOutcome.position;
+  logger.debug('running SlightAdjustmentProbabilityModifier');
+  slightAdjustmentProbabilityModifier.modify(player);
 }
