@@ -3,7 +3,6 @@ import Assignment from './Assignment';
 import logger from '../logger';
 import Player from './Player';
 import Position from './Position';
-import { determinePositionOutcome } from '../probabilities';
 
 export interface LineupOutcome {
   lineup: Lineup;
@@ -36,10 +35,10 @@ export default class Lineup {
   }
 
   addAssignment(player: Player, position: Position) {
-    this.assignments.push(new Assignment(player, position));
+    this.assignments.push({ player, position });
   }
 
-  sortAssigments() {
+  sortAssignments() {
     // Sort based on the Position definition
     this.assignments = _.sortBy(
       this.assignments,
@@ -49,41 +48,52 @@ export default class Lineup {
   }
 
   static generateLineupOutcome(players: Player[], frame = 1): LineupOutcome {
-    const lineup: Lineup = new Lineup(frame);
-
-    // randomize the players to select for the lineup
-    const playersAvailable = _.shuffle(players);
-
-    // fill a lineup of 5 assignments
-    while (lineup.assignments.length < 5) {
-      const player: Player = playersAvailable.shift()!;
-      logger.debug('attempting to place player in assignment: %o', player);
-
-      // if this is the last player, assign to an available position
-      if (playersAvailable.length === 0) {
-        const availablePosition = _.sample(lineup.findEmptyPositions())!;
-        logger.debug(
-          'only one player remaining, assigning to availablePosition %o',
-          availablePosition
-        );
-        lineup.addAssignment(player, availablePosition);
-        break;
-      }
-
-      const position: Position = determinePositionOutcome(player.skills);
-      logger.trace('position %j', position);
-
-      if (lineup.isPositionTaken(position)) {
-        logger.trace('already have a player at this position, moving on...');
-        playersAvailable.push(player);
-      } else {
-        // assign this player to the position
-        logger.trace('adding player to the position');
-        lineup.addAssignment(player, position);
-      }
+    if (!players || players.length < Position.ALL_POSITIONS.length) {
+      throw new Error(
+        `At least ${Position.ALL_POSITIONS.length} players required`
+      );
     }
 
-    lineup.sortAssigments();
+    const lineup: Lineup = new Lineup(frame);
+    const playersAvailable = _.clone(players);
+    // randomize the positions to fill
+    const positionsToFill = _.shuffle(lineup.findEmptyPositions());
+
+    // build the lineup per each position
+    positionsToFill.forEach((position) => {
+      logger.debug('attempting to fill position: %s', position.name);
+      let bestPlayerSoFar = null;
+      let bestPlayerSoFarIndex = -1;
+
+      for (let index = 0; index < playersAvailable.length; index++) {
+        const currentPlayer = playersAvailable[index];
+
+        // if we've not picked a best player so far, you're it!
+        if (!bestPlayerSoFar) {
+          bestPlayerSoFar = currentPlayer;
+          bestPlayerSoFarIndex = index;
+          logger.debug('bestPlayerSoFar: %o', bestPlayerSoFar);
+          continue;
+        }
+
+        // are you better than the current player?
+        if (
+          currentPlayer.hasHigherPositionProbability(position, bestPlayerSoFar)
+        ) {
+          bestPlayerSoFar = currentPlayer;
+          bestPlayerSoFarIndex = index;
+          logger.debug('bestPlayerSoFar: %o', bestPlayerSoFar);
+        }
+      }
+
+      logger.trace('assigning position to player: %o', bestPlayerSoFar);
+      lineup.addAssignment(bestPlayerSoFar!, position);
+
+      // remove the player we assigned so we don't assign to another position
+      playersAvailable.splice(bestPlayerSoFarIndex, 1);
+    });
+
+    lineup.sortAssignments();
 
     logger.trace('lineup %j', lineup);
     return {

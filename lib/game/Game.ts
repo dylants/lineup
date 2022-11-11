@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { populatePositionProbabilities } from '../probabilities';
 import Lineup from './Lineup';
 import Player from './Player';
 
@@ -15,6 +16,9 @@ export default class Game {
     const game = new Game();
     let frame = 1;
 
+    // populate the position probabilities
+    players.forEach(populatePositionProbabilities);
+
     while (frame <= NUM_FRAMES) {
       // (re)set the remaining players to the pool of players available
       let remainingPlayers: Player[] = players;
@@ -26,6 +30,7 @@ export default class Game {
         }
 
         // if it's less than 5, add more to make it 5
+        // TODO need to pull players who aren't already in the list
         if (remainingPlayers.length < 5) {
           const difference = 5 - remainingPlayers.length;
           remainingPlayers = remainingPlayers.concat(
