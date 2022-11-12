@@ -1,6 +1,8 @@
+import { accessSync, constants } from 'fs';
 import Player from './game/Player';
 import Position from './game/Position';
-import { generateRandomPlayers } from './utils';
+import Skill from './game/Skill';
+import { generateRandomPlayers, generateTeam } from './utils';
 
 describe('utils', () => {
   describe('generateRandomPlayers', () => {
@@ -45,6 +47,49 @@ describe('utils', () => {
           positions.splice(positions.indexOf(position), 1);
         });
         expect(positions.length).toEqual(2);
+      });
+    });
+  });
+
+  describe('generateTeam', () => {
+    let virtual: boolean;
+    beforeEach(() => {
+      jest.resetModules();
+      try {
+        accessSync('../my-team', constants.R_OK);
+        virtual = false;
+      } catch (err) {
+        virtual = true;
+      }
+    });
+
+    describe('when my-team exists', () => {
+      let player: Player;
+
+      beforeEach(() => {
+        player = new Player('Jordan', Skill.DEFAULT_SG_SKILLS);
+        jest.mock('../my-team', () => [player], { virtual });
+      });
+
+      it('should return the team', () => {
+        expect(generateTeam()).toEqual([player]);
+      });
+    });
+
+    describe('when my-team does not exist', () => {
+      beforeEach(() => {
+        jest.mock(
+          '../my-team',
+          () => {
+            throw new Error();
+          },
+          { virtual }
+        );
+      });
+
+      it('should return 10 random players', () => {
+        const team = generateTeam();
+        expect(team.length).toEqual(10);
       });
     });
   });

@@ -30,11 +30,17 @@ export default class Game {
         }
 
         // if it's less than 5, add more to make it 5
-        // TODO need to pull players who aren't already in the list
         if (remainingPlayers.length < 5) {
+          const otherPlayers = _.differenceBy(
+            players,
+            remainingPlayers,
+            (player) => player.name
+          );
           const difference = 5 - remainingPlayers.length;
+
+          // shuffle the list of other players, and add the difference
           remainingPlayers = remainingPlayers.concat(
-            _.times(difference, () => _.sample(players)!)
+            _.shuffle(otherPlayers).slice(0, difference)
           );
         }
 

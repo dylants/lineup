@@ -28,3 +28,11 @@ export function generateRandomPlayers(amount: number): Player[] {
     )
     .value();
 }
+
+export function generateTeam(): Player[] {
+  try {
+    return require('../my-team');
+  } catch (err) {
+    return generateRandomPlayers(10);
+  }
+}

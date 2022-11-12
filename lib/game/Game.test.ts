@@ -80,6 +80,25 @@ describe('Game', () => {
       });
     });
 
+    describe('with 6 players', () => {
+      const players = generateRandomPlayers(6);
+
+      beforeAll(() => {
+        game = Game.generateGame(players);
+      });
+
+      it('each lineup should have unique players', () => {
+        game.lineups.forEach((lineup) => {
+          const playerNames = _.map(
+            lineup.assignments,
+            (assignment) => assignment.player.name
+          );
+          const uniquePlayerNames = _.uniq(playerNames);
+          expect(playerNames.length).toEqual(uniquePlayerNames.length);
+        });
+      });
+    });
+
     describe('with 11 players', () => {
       const players = generateRandomPlayers(11);
 
