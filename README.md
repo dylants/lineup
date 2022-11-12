@@ -48,6 +48,20 @@ The application will be viewable on port 3000 (by default).
 
 Configuration for the application is available within the [`config/index.js`](config/index.js) file.
 
+### My Team
+
+You can create your own team by creating a `my-team.ts` file in the root of the project. This file should export an array of players (`Player[]`). For example:
+
+```typescript
+const myTeam: Player[] = [
+  ...
+];
+
+module.exports = myTeam;
+```
+
+If this file exists, it will be used in the Game API, and shown in the UI.
+
 ### Logging
 
 The default log level is set to `'info'`. Most of the log messages within the application are at lower levels.
