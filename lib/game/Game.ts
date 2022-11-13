@@ -44,10 +44,11 @@ export default class Game {
           );
         }
 
-        // generate the lineup
+        // generate the lineup outcome
+        const lineup = new Lineup(frame);
         const lineupOutcome = Lineup.generateLineupOutcome(
           remainingPlayers,
-          frame
+          lineup
         );
 
         // store away the outcomes

@@ -56,7 +56,7 @@ describe('utils', () => {
     beforeEach(() => {
       jest.resetModules();
       try {
-        accessSync('../my-team', constants.R_OK);
+        accessSync('./my-team.ts', constants.R_OK);
         virtual = false;
       } catch (err) {
         virtual = true;

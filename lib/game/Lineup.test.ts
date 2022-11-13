@@ -60,7 +60,7 @@ describe('Lineup', () => {
 
       it('should error', () => {
         expect(() => {
-          Lineup.generateLineupOutcome(players);
+          Lineup.generateLineupOutcome(players, new Lineup(1));
         }).toThrow(/At least 5 players required/);
       });
     });
@@ -78,7 +78,7 @@ describe('Lineup', () => {
       let lineupOutcome: LineupOutcome;
       let lineup: Lineup;
       beforeAll(() => {
-        lineupOutcome = Lineup.generateLineupOutcome(players);
+        lineupOutcome = Lineup.generateLineupOutcome(players, new Lineup(1));
         lineup = lineupOutcome.lineup;
       });
 
@@ -131,7 +131,7 @@ describe('Lineup', () => {
       let lineupOutcome: LineupOutcome;
       let lineup: Lineup;
       beforeAll(() => {
-        lineupOutcome = Lineup.generateLineupOutcome(players);
+        lineupOutcome = Lineup.generateLineupOutcome(players, new Lineup(1));
         lineup = lineupOutcome.lineup;
       });
 
@@ -156,8 +156,42 @@ describe('Lineup', () => {
         expect(positionNames).toEqual(['PG', 'SG', 'SF', 'PF', 'C']);
       });
 
-      it('should generate a LineupOutcome without 5 remaining players', () => {
+      it('should generate a LineupOutcome with 5 remaining players', () => {
         expect(lineupOutcome.remainingPlayers.length).toEqual(5);
+      });
+    });
+
+    describe('with an existing Lineup', () => {
+      const assignedPlayers = [
+        new Player('power', Skill.DEFAULT_PF_SKILLS),
+        new Player('center', Skill.DEFAULT_C_SKILLS),
+      ];
+      assignedPlayers.forEach(populatePositionProbabilities);
+      const remainingPlayers = [
+        new Player('point', Skill.DEFAULT_PG_SKILLS),
+        new Player('shoot', Skill.DEFAULT_SG_SKILLS),
+        new Player('small', Skill.DEFAULT_SF_SKILLS),
+      ];
+      remainingPlayers.forEach(populatePositionProbabilities);
+
+      let lineupOutcome: LineupOutcome;
+      beforeAll(() => {
+        const existingLineup = new Lineup(1);
+        existingLineup.addAssignment(assignedPlayers[0], Position.PF);
+        existingLineup.addAssignment(assignedPlayers[1], Position.C);
+
+        lineupOutcome = Lineup.generateLineupOutcome(
+          remainingPlayers,
+          existingLineup
+        );
+      });
+
+      it('should generate a lineup of 5 players', () => {
+        expect(lineupOutcome.lineup.assignments.length).toEqual(5);
+      });
+
+      it('should generate a LineupOutcome without any remaining players', () => {
+        expect(lineupOutcome.remainingPlayers.length).toEqual(0);
       });
     });
   });

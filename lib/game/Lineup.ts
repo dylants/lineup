@@ -47,17 +47,18 @@ export default class Lineup {
     );
   }
 
-  static generateLineupOutcome(players: Player[], frame = 1): LineupOutcome {
-    if (!players || players.length < Position.ALL_POSITIONS.length) {
-      throw new Error(
-        `At least ${Position.ALL_POSITIONS.length} players required`
-      );
-    }
-
-    const lineup: Lineup = new Lineup(frame);
-    const playersAvailable = _.clone(players);
+  static generateLineupOutcome(
+    players: Player[],
+    lineup: Lineup
+  ): LineupOutcome {
     // randomize the positions to fill
     const positionsToFill = _.shuffle(lineup.findEmptyPositions());
+
+    if (!players || players.length < positionsToFill.length) {
+      throw new Error(`At least ${positionsToFill.length} players required`);
+    }
+
+    const playersAvailable = _.clone(players);
 
     // build the lineup per each position
     positionsToFill.forEach((position) => {
