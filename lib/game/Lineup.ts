@@ -102,4 +102,72 @@ export default class Lineup {
       remainingPlayers: playersAvailable,
     };
   }
+
+  static generatePartialLineup(players: Player[], frame = 1): Lineup {
+    const lineup = new Lineup(frame);
+
+    const playersAvailable = _.clone(players);
+
+    while (playersAvailable.length > 0) {
+      const positionsToFill = lineup.findEmptyPositions();
+
+      if (playersAvailable.length > positionsToFill.length) {
+        throw new Error(
+          `At most ${positionsToFill.length} players can be provided`
+        );
+      }
+
+      // find the best assignments for the positions available
+      let bestAssignments = positionsToFill.map((position): Assignment => {
+        const bestPlayer = playersAvailable.reduce(
+          (bestPlayer, currentPlayer) => {
+            if (!bestPlayer) {
+              return currentPlayer;
+            }
+
+            if (
+              currentPlayer.hasHigherPositionProbability(position, bestPlayer)
+            ) {
+              return currentPlayer;
+            } else {
+              return bestPlayer;
+            }
+          }
+        );
+
+        const score = bestPlayer.getPositionProbability(position).score;
+
+        return {
+          player: bestPlayer,
+          position,
+          score,
+        };
+      });
+
+      // sort these assignments based on the score
+      bestAssignments = _.orderBy(bestAssignments, 'score', 'desc');
+
+      // add assignments to the lineup for each unique player
+      bestAssignments.forEach((bestAssignment) => {
+        // while the best assignment player is available
+        if (playersAvailable.includes(bestAssignment.player)) {
+          // add the player's assignment to the lineup
+          lineup.addAssignment(bestAssignment.player, bestAssignment.position);
+
+          // remove the player from the available list
+          _.remove(
+            playersAvailable,
+            (player) => player.name === bestAssignment.player.name
+          );
+        } else {
+          return;
+        }
+      });
+    }
+
+    lineup.sortAssignments();
+
+    logger.trace('lineup %j', lineup);
+    return lineup;
+  }
 }
