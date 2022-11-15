@@ -73,7 +73,7 @@ export default class Lineup {
         if (!bestPlayerSoFar) {
           bestPlayerSoFar = currentPlayer;
           bestPlayerSoFarIndex = index;
-          logger.debug('bestPlayerSoFar: %o', bestPlayerSoFar);
+          logger.debug('bestPlayerSoFar (default): %o', bestPlayerSoFar);
           continue;
         }
 
@@ -83,7 +83,7 @@ export default class Lineup {
         ) {
           bestPlayerSoFar = currentPlayer;
           bestPlayerSoFarIndex = index;
-          logger.debug('bestPlayerSoFar: %o', bestPlayerSoFar);
+          logger.debug('bestPlayerSoFar (winner): %o', bestPlayerSoFar);
         }
       }
 
@@ -96,6 +96,7 @@ export default class Lineup {
 
     lineup.sortAssignments();
 
+    logger.debug('lineup created');
     logger.trace('lineup %j', lineup);
     return {
       lineup,
@@ -148,6 +149,7 @@ export default class Lineup {
         // while the best assignment player is available
         if (playersAvailable.includes(bestAssignment.player)) {
           // add the player's assignment to the lineup
+          logger.debug('adding assignment: %o', bestAssignment);
           lineup.addAssignment(bestAssignment.player, bestAssignment.position);
 
           // remove the player from the available list
@@ -163,6 +165,7 @@ export default class Lineup {
 
     lineup.sortAssignments();
 
+    logger.debug('partial lineup created');
     logger.trace('lineup %j', lineup);
     return lineup;
   }

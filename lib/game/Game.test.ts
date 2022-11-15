@@ -18,7 +18,11 @@ describe('Game', () => {
     let game: Game;
 
     describe('with 10 players', () => {
-      const players = generateRandomPlayers(10);
+      let players: Player[];
+
+      beforeAll(() => {
+        players = generateRandomPlayers(10);
+      });
 
       beforeEach(() => {
         game = Game.generateGame(players);
@@ -47,7 +51,11 @@ describe('Game', () => {
     });
 
     describe('with less than 5 players', () => {
-      const players = generateRandomPlayers(4);
+      let players: Player[];
+
+      beforeAll(() => {
+        players = generateRandomPlayers(4);
+      });
 
       it('should throw error for not enough players', () => {
         expect(() => {
@@ -57,7 +65,11 @@ describe('Game', () => {
     });
 
     describe('with 9 players', () => {
-      const players = generateRandomPlayers(9);
+      let players: Player[];
+
+      beforeAll(() => {
+        players = generateRandomPlayers(9);
+      });
 
       beforeEach(() => {
         game = Game.generateGame(players);
@@ -91,7 +103,11 @@ describe('Game', () => {
     });
 
     describe('with 6 players', () => {
-      const players = generateRandomPlayers(6);
+      let players: Player[];
+
+      beforeAll(() => {
+        players = generateRandomPlayers(6);
+      });
 
       beforeEach(() => {
         game = Game.generateGame(players);
@@ -110,7 +126,11 @@ describe('Game', () => {
     });
 
     describe('with 11 players', () => {
-      const players = generateRandomPlayers(11);
+      let players: Player[];
+
+      beforeAll(() => {
+        players = generateRandomPlayers(11);
+      });
 
       beforeEach(() => {
         game = Game.generateGame(players);
@@ -146,27 +166,22 @@ describe('Game', () => {
         new Player('power2', Skill.DEFAULT_PF_SKILLS),
       ];
       players.forEach(defaultPositionProbabilities);
-      // point2 is a little better at SG than point1
-      players[5].positionProbabilities[1].score++;
-      // power2 is a little better at C than power1
-      players[7].positionProbabilities[4].score++;
       game = Game.generateGame(players);
 
       const expectedLineups = [
         // 1st frame get's the top 5 (in order)
         ['point1', 'shoot1', 'small1', 'power1', 'center1'],
-        // 2nd frame gets the remaining 3 + best top 2 to fill gaps
+        // 2nd frame gets the remaining 3 (point2, small2, power2)
+        // plus best other players to fill gaps
         ['point2', 'shoot1', 'small2', 'power2', 'center1'],
-        // 3rd frame takes best of remaining
-        // minus 2 that filled gaps (shoot1 and center1)
-        // and point2 is a good backup SG, power2 a good backup C
-        ['point1', 'point2', 'small1', 'power1', 'power2'],
-        // 4th frame takes last remaining player (small2)
-        // and fills remaining lineup with best of all (in order)
-        ['point1', 'shoot1', 'small2', 'power1', 'center1'],
+        // 3rd frame gets remaining 3 (point1, small1, power1)
+        // plus best other players to fill gaps
+        ['point1', 'shoot1', 'small1', 'power1', 'center1'],
+        // 4th frame we're back to 2nd frame logic
+        ['point2', 'shoot1', 'small2', 'power2', 'center1'],
       ];
       expectedLineups.forEach((expectedLineup, index) => {
-        describe(`for lineup ${index}`, () => {
+        describe(`for lineup ${index + 1}`, () => {
           const lineup = game.lineups[index];
 
           expectedLineup.forEach((name, index) => {
