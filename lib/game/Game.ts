@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import LineupBuilder, { LineupBuilderResult } from '../builder/LineupBuilder';
 import logger from '../logger';
 import Lineup from './Lineup';
 import Player from './Player';
@@ -17,6 +18,8 @@ export default class Game {
 
     const game = new Game();
     let frame = 1;
+    const lineupBuilder = new LineupBuilder();
+    let lineupBuilderResult: LineupBuilderResult;
 
     while (frame <= NUM_FRAMES) {
       // (re)set the remaining players to the pool of players available
@@ -29,13 +32,19 @@ export default class Game {
         }
         logger.debug(`generating lineup for frame ${frame}`);
 
-        let lineup: Lineup;
+        let lineup: Lineup | undefined;
         if (remainingPlayers.length < MIN_PLAYERS_FOR_LINEUP) {
           logger.debug(
             'remainingPlayers less than min, generating partial lineup'
           );
-          // if it's less than minimum, generate a partial lineup
-          lineup = Lineup.generatePartialLineup(remainingPlayers);
+          // if it's less than minimum, generate a lineup optimized for the remaining players
+          lineupBuilderResult = lineupBuilder
+            .setFrame(frame)
+            .setPlayers(remainingPlayers)
+            .setOptimizeForPlayers()
+            .build();
+          lineup = lineupBuilderResult.lineup;
+
           // reset the remaining players to the pool of other players
           // TODO add a concept like "needs rest" here to those that were picked in back-to-back frames
           remainingPlayers = _.differenceBy(
@@ -44,21 +53,23 @@ export default class Game {
             (player) => player.name
           );
         } else {
-          logger.debug('remainingPlayers more than min, generating lineup');
-          // otherwise just create an empty lineup
-          lineup = new Lineup(frame);
+          logger.debug(
+            'remainingPlayers more than min, no need to generate partial lineup'
+          );
         }
 
         // generate the lineup outcome, using the existing lineup
-        const lineupOutcome = Lineup.generateLineupOutcome(
-          remainingPlayers,
-          lineup
-        );
+        lineupBuilderResult = lineupBuilder
+          .setFrame(frame)
+          .setPlayers(remainingPlayers)
+          .setInitialLineup(lineup)
+          .setOptimizeForPositions()
+          .build();
 
         // store away the outcomes
         logger.debug(`storing lineup for frame ${frame}`);
-        game.lineups.push(lineupOutcome.lineup);
-        remainingPlayers = lineupOutcome.remainingPlayers;
+        game.lineups.push(lineupBuilderResult.lineup);
+        remainingPlayers = lineupBuilderResult.playersNotSelected;
 
         // move on to the next frame
         frame++;
