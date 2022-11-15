@@ -12,7 +12,7 @@ describe('Player', () => {
 
     it('should return the correct skill', () => {
       expect(player.getSkill(Position.SG)).toEqual({
-        ability: 200,
+        ability: 100,
         position: Position.SG,
       });
     });
@@ -31,14 +31,14 @@ describe('Player', () => {
       player = new Player('Jordan', Skill.DEFAULT_SG_SKILLS);
       player.positionProbabilities.push({
         position: Position.SG,
-        score: 200,
+        score: 100,
       });
     });
 
     it('should return the correct position probability', () => {
       expect(player.getPositionProbability(Position.SG)).toEqual({
         position: Position.SG,
-        score: 200,
+        score: 100,
       });
     });
 
@@ -58,11 +58,11 @@ describe('Player', () => {
       jordan.positionProbabilities.push(
         {
           position: Position.SG,
-          score: 200,
+          score: 100,
         },
         {
           position: Position.SF,
-          score: 100,
+          score: 80,
         },
         {
           position: Position.PF,
@@ -74,11 +74,11 @@ describe('Player', () => {
       james.positionProbabilities.push(
         {
           position: Position.SG,
-          score: 100,
+          score: 80,
         },
         {
           position: Position.SF,
-          score: 200,
+          score: 100,
         },
         {
           position: Position.PF,

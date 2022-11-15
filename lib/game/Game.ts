@@ -1,3 +1,5 @@
+import _ from 'lodash';
+import logger from '../logger';
 import Lineup from './Lineup';
 import Player from './Player';
 import Position from './Position';
@@ -25,14 +27,24 @@ export default class Game {
         if (frame > NUM_FRAMES) {
           break;
         }
+        logger.debug(`generating lineup for frame ${frame}`);
 
         let lineup: Lineup;
         if (remainingPlayers.length < MIN_PLAYERS_FOR_LINEUP) {
+          logger.debug(
+            'remainingPlayers less than min, generating partial lineup'
+          );
           // if it's less than minimum, generate a partial lineup
           lineup = Lineup.generatePartialLineup(remainingPlayers);
-          // reset the remaining players to the pool of players available
-          remainingPlayers = players;
+          // reset the remaining players to the pool of other players
+          // TODO add a concept like "needs rest" here to those that were picked in back-to-back frames
+          remainingPlayers = _.differenceBy(
+            players,
+            remainingPlayers,
+            (player) => player.name
+          );
         } else {
+          logger.debug('remainingPlayers more than min, generating lineup');
           // otherwise just create an empty lineup
           lineup = new Lineup(frame);
         }
@@ -44,6 +56,7 @@ export default class Game {
         );
 
         // store away the outcomes
+        logger.debug(`storing lineup for frame ${frame}`);
         game.lineups.push(lineupOutcome.lineup);
         remainingPlayers = lineupOutcome.remainingPlayers;
 
