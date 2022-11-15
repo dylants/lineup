@@ -2,6 +2,16 @@ import _ from 'lodash';
 
 import Game from './Game';
 import { generateRandomPlayers } from '../utils';
+import Player from './Player';
+import Skill from './Skill';
+import Position from './Position';
+
+function defaultPositionProbabilities(player: Player): void {
+  player.positionProbabilities = player.skills.map((skill) => ({
+    position: skill.position,
+    score: skill.ability,
+  }));
+}
 
 describe('Game', () => {
   describe('generateGame', () => {
@@ -10,7 +20,7 @@ describe('Game', () => {
     describe('with 10 players', () => {
       const players = generateRandomPlayers(10);
 
-      beforeAll(() => {
+      beforeEach(() => {
         game = Game.generateGame(players);
       });
 
@@ -49,7 +59,7 @@ describe('Game', () => {
     describe('with 9 players', () => {
       const players = generateRandomPlayers(9);
 
-      beforeAll(() => {
+      beforeEach(() => {
         game = Game.generateGame(players);
       });
 
@@ -83,7 +93,7 @@ describe('Game', () => {
     describe('with 6 players', () => {
       const players = generateRandomPlayers(6);
 
-      beforeAll(() => {
+      beforeEach(() => {
         game = Game.generateGame(players);
       });
 
@@ -102,7 +112,7 @@ describe('Game', () => {
     describe('with 11 players', () => {
       const players = generateRandomPlayers(11);
 
-      beforeAll(() => {
+      beforeEach(() => {
         game = Game.generateGame(players);
       });
 
@@ -121,6 +131,53 @@ describe('Game', () => {
 
         // all players available have been assigned at least once
         expect(_.difference(playersAvailable, playersAssigned)).toEqual([]);
+      });
+    });
+
+    describe('with 8 known players', () => {
+      const players = [
+        new Player('point1', Skill.DEFAULT_PG_SKILLS),
+        new Player('shoot1', Skill.DEFAULT_SG_SKILLS),
+        new Player('small1', Skill.DEFAULT_SF_SKILLS),
+        new Player('power1', Skill.DEFAULT_PF_SKILLS),
+        new Player('center1', Skill.DEFAULT_C_SKILLS),
+        new Player('point2', Skill.DEFAULT_PG_SKILLS),
+        new Player('small2', Skill.DEFAULT_SF_SKILLS),
+        new Player('power2', Skill.DEFAULT_PF_SKILLS),
+      ];
+      players.forEach(defaultPositionProbabilities);
+      // point2 is a little better at SG than point1
+      players[5].positionProbabilities[1].score++;
+      // power2 is a little better at C than power1
+      players[7].positionProbabilities[4].score++;
+      game = Game.generateGame(players);
+
+      const expectedLineups = [
+        // 1st frame get's the top 5 (in order)
+        ['point1', 'shoot1', 'small1', 'power1', 'center1'],
+        // 2nd frame gets the remaining 3 + best top 2 to fill gaps
+        ['point2', 'shoot1', 'small2', 'power2', 'center1'],
+        // 3rd frame takes best of remaining
+        // minus 2 that filled gaps (shoot1 and center1)
+        // and point2 is a good backup SG, power2 a good backup C
+        ['point1', 'point2', 'small1', 'power1', 'power2'],
+        // 4th frame takes last remaining player (small2)
+        // and fills remaining lineup with best of all (in order)
+        ['point1', 'shoot1', 'small2', 'power1', 'center1'],
+      ];
+      expectedLineups.forEach((expectedLineup, index) => {
+        describe(`for lineup ${index}`, () => {
+          const lineup = game.lineups[index];
+
+          expectedLineup.forEach((name, index) => {
+            it(`should assign correct player to position ${Position.ALL_POSITIONS[index].name}`, () => {
+              expect(lineup.assignments[index].position.name).toEqual(
+                Position.ALL_POSITIONS[index].name
+              );
+              expect(lineup.assignments[index].player.name).toEqual(name);
+            });
+          });
+        });
       });
     });
   });

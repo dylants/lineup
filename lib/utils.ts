@@ -2,6 +2,7 @@ import _ from 'lodash';
 import Player from './game/Player';
 import Position from './game/Position';
 import Skill from './game/Skill';
+import { populatePositionProbabilities } from './probabilities';
 
 export function generateRandomPlayers(amount: number): Player[] {
   // perform the division, and save off both the quotient and remainder
@@ -19,19 +20,24 @@ export function generateRandomPlayers(amount: number): Player[] {
   // randomize the list, and create a new player for each position
   return _(positions)
     .shuffle()
-    .map(
-      (position, index) =>
-        new Player(
-          `${position.name}_${index}`,
-          Skill.getDefaultSkills(position)
-        )
-    )
+    .map((position, index) => {
+      const player = new Player(
+        `${position.name}_${index}`,
+        Skill.getDefaultSkills(position)
+      );
+      populatePositionProbabilities(player);
+      return player;
+    })
     .value();
 }
 
 export function generateTeam(): Player[] {
   try {
-    return require('../my-team');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const players = require('../my-team');
+    // TODO is this the best place to do this?
+    players.forEach(populatePositionProbabilities);
+    return players;
   } catch (err) {
     return generateRandomPlayers(10);
   }

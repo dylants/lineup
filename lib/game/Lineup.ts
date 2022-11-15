@@ -121,10 +121,6 @@ export default class Lineup {
       let bestAssignments = positionsToFill.map((position): Assignment => {
         const bestPlayer = playersAvailable.reduce(
           (bestPlayer, currentPlayer) => {
-            if (!bestPlayer) {
-              return currentPlayer;
-            }
-
             if (
               currentPlayer.hasHigherPositionProbability(position, bestPlayer)
             ) {
