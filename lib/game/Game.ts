@@ -1,23 +1,20 @@
-import _ from 'lodash';
-import { populatePositionProbabilities } from '../probabilities';
 import Lineup from './Lineup';
 import Player from './Player';
+import Position from './Position';
 
 const NUM_FRAMES = 4;
+const MIN_PLAYERS_FOR_LINEUP = Position.ALL_POSITIONS.length;
 
 export default class Game {
   lineups: Lineup[] = [];
 
   static generateGame(players: Player[]): Game {
-    if (players.length < 5) {
+    if (players.length < MIN_PLAYERS_FOR_LINEUP) {
       throw new Error('not enough players for a Game');
     }
 
     const game = new Game();
     let frame = 1;
-
-    // populate the position probabilities
-    players.forEach(populatePositionProbabilities);
 
     while (frame <= NUM_FRAMES) {
       // (re)set the remaining players to the pool of players available
@@ -29,25 +26,21 @@ export default class Game {
           break;
         }
 
-        // if it's less than 5, add more to make it 5
-        if (remainingPlayers.length < 5) {
-          const otherPlayers = _.differenceBy(
-            players,
-            remainingPlayers,
-            (player) => player.name
-          );
-          const difference = 5 - remainingPlayers.length;
-
-          // shuffle the list of other players, and add the difference
-          remainingPlayers = remainingPlayers.concat(
-            _.shuffle(otherPlayers).slice(0, difference)
-          );
+        let lineup: Lineup;
+        if (remainingPlayers.length < MIN_PLAYERS_FOR_LINEUP) {
+          // if it's less than minimum, generate a partial lineup
+          lineup = Lineup.generatePartialLineup(remainingPlayers);
+          // reset the remaining players to the pool of players available
+          remainingPlayers = players;
+        } else {
+          // otherwise just create an empty lineup
+          lineup = new Lineup(frame);
         }
 
-        // generate the lineup
+        // generate the lineup outcome, using the existing lineup
         const lineupOutcome = Lineup.generateLineupOutcome(
           remainingPlayers,
-          frame
+          lineup
         );
 
         // store away the outcomes

@@ -25,6 +25,11 @@ describe('utils', () => {
           .sort();
         expect(positions).toEqual(expectedPositions);
       });
+      it('should populate position probabilities', () => {
+        players.forEach((player) => {
+          expect(player.positionProbabilities.length).toEqual(5);
+        });
+      });
     });
 
     describe('with odd divisible amount', () => {
@@ -56,7 +61,7 @@ describe('utils', () => {
     beforeEach(() => {
       jest.resetModules();
       try {
-        accessSync('../my-team', constants.R_OK);
+        accessSync('./my-team.ts', constants.R_OK);
         virtual = false;
       } catch (err) {
         virtual = true;
@@ -73,6 +78,10 @@ describe('utils', () => {
 
       it('should return the team', () => {
         expect(generateTeam()).toEqual([player]);
+      });
+      it('should populate position probabilities', () => {
+        const players = generateTeam();
+        expect(players[0].positionProbabilities.length).toEqual(5);
       });
     });
 

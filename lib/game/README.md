@@ -17,6 +17,7 @@ Below is an outline of the class hierarchy used in the `lineup` codebase:
 - Assignment
   - player: Player
   - position: Position
+  - score?: number
 - Lineup
   - assignments: Assignment[]
   - frame: number
@@ -27,12 +28,20 @@ Below is an outline of the class hierarchy used in the `lineup` codebase:
 
 Below is the algorithm to generate a `Game`, which contains a set of `Lineup`s:
 
-### `generateGame`
+### `generateGame` : `Game`
 
-Given a list of `Player`s who each have a set of `Skill`s for each `Position`, this code uses the `probabilities` library to populate the list of `PositionProbability`s for each `Position` (easy for you to say).
+Expects as input a list of `Player`s, where each `Player` has a `PositionProbability` for each `Position`. This function uses a combination of `generateLineupOutcome` and `generatePartialLineup` to build 4 `Lineup`s for the `Game`.
 
-Once these probabilities are generated, generates a `Lineup` for each `frame` within a game.
+### `generateLineupOutcome` : `LineupOutcome`
 
-### `generateLineupOutcome`
+_(for each position, find best player)_
 
-Given a list of `Player`s who each have a `PositionProbability`, this code finds the `Player` with the highest `PositionProbability` for each `Position`, and generates an `Assignment` for that `Player` and `Position`.
+Accepts a list of `Player`s (who each have a `PositionProbability`) and a `Lineup`. This function finds the `Player` with the highest `PositionProbability` for each `Position`, and generates an `Assignment` for that `Player` and `Position`. We then add the `Assignment`s to the `Lineup`, and return the `Lineup` and list of `Player`s who were not assigned.
+
+### `generatePartialLineup` : `Lineup`
+
+_(for all players, find best position)_
+
+As the name indicates, this generates a `Lineup` without assignments for all positions.
+
+Accepts a list of `Player`s who each have a `PositionProbability`. This function creates a new `Lineup`, and assigns the `Player`s to their highest scoring `PositionProbability`, when compared to the other `Player`s.
